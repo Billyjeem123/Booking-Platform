@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
-<!-- Mirrored from www.ticketleap.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 Mar 2025 06:25:13 GMT -->
-<!-- Added by HTTrack --><meta
+<meta
     http-equiv="content-type"
     content="text/html;charset=UTF-8"
-/><!-- /Added by HTTrack -->
+/>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,14 +11,14 @@
         name="robots"
         content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         img:is([sizes='auto' i], [sizes^='auto,' i]) {
             contain-intrinsic-size: 3000px 1500px;
         }
     </style>
 
-    <!-- This site is optimized with the Yoast SEO Premium plugin v24.7 (Yoast SEO v24.7) - https://yoast.com/wordpress/plugins/seo/ -->
-    <title>Online Ticket Selling | Free Event Ticketing Platform</title>
+    <title>Online Ticket Selling </title>
     <link
         rel="preload"
         data-rocket-preload
@@ -1018,23 +1017,15 @@
                 ></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="paymentForm">
                     <div class="mb-3">
                         <label for="locationSelect" class="form-label">Location</label>
                         <select class="form-select" id="locationSelect" required>
                             <option value="">Select Location</option>
-                            <option value="Iyana cele at Ilesa" data-price="100">
-                                Iyana cele at Ilesa - $100
-                            </option>
-                            <option value="O.U.I  at Ife bye pass" data-price="80">
-                                O.U.I at Ife bye pass - $80
-                            </option>
-                            <option
-                                value="Ibadan Iwo road onwards to Testing ground Idi (police area command)"
-                                data-price="80"
-                            >
-                                Ibadan Iwo road onwards to Testing ground Idi (police area
-                                command) - $80
+                            <option value="Iyana cele at Ilesa" data-price="100">Iyana cele at Ilesa </option>
+                            <option value="O.U.I at Ife bye pass" data-price="80">O.U.I at Ife bye pass </option>
+                            <option value="Ibadan Iwo road onwards to Testing ground Idi (police area command)" data-price="80">
+                                Ibadan Iwo road onwards to Testing ground Idi (police area command) - $80
                             </option>
                         </select>
                     </div>
@@ -1046,29 +1037,20 @@
 
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            id="name"
-                            placeholder="Enter your name"
-                            required
-                        />
+                        <input type="text" class="form-control" id="name" placeholder="Enter your name" required />
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            placeholder="Enter your email"
-                            required
-                        />
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required />
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">
-                        Pay Now
-                    </button>
+                    <div class="mb-3">
+                        <label for="number" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="number" placeholder="Enter your Phone Number" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Pay Now</button>
                 </form>
             </div>
         </div>
@@ -1076,17 +1058,88 @@
 </div>
 
 <!-- Bootstrap JS (with Popper) -->
+<script src="https://checkout.flutterwave.com/v3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script>
-    const locationSelect = document.getElementById('locationSelect')
-    const priceInput = document.getElementById('price')
 
-    locationSelect.addEventListener('change', function () {
-        const selectedOption = this.options[this.selectedIndex]
-        const price = selectedOption.getAttribute('data-price')
-        priceInput.value = price ? `$${price}` : ''
-    })
+<script>
+    document.getElementById('locationSelect').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const price = selectedOption.getAttribute('data-price');
+
+        // Display price as a formatted currency value (e.g., $100)
+        document.getElementById('price').value = price ? `₦${price}` : '';
+
+
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('number').value.trim();
+        const price = parseFloat(document.getElementById('price').value.replace('₦', '').replace('$', '').trim()) * 100;
+
+        const locationSelect = document.getElementById('locationSelect');
+        const selectedLocation = locationSelect.options[locationSelect.selectedIndex].text;  // Get selected location name
+        if (!name || !email || !phone || !price) {
+            alert('Please fill all fields and select a valid location.');
+            return;
+        }
+
+        fetch('/api/payment/initialize-payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone,
+                amount: price,
+                location: selectedLocation  // Send the selected location to the backend
+            })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok.');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    FlutterwaveCheckout({
+                        public_key: '{{ env("FLW_PUBLIC_KEY") }}',
+                        tx_ref: data.tx_ref,
+                        amount: price / 100,
+                        currency: 'NGN',
+                        customer: {
+                            email: email,
+                            name: name,
+                            phone_number: phone,
+                        },
+                        meta: {  // Adding metadata
+                            location: selectedLocation  // Track the selected location
+                        },
+                        callback: function(response) {
+                            if (response.status === 'successful') {
+                                window.location.href = `/api/payment/payment-success?transaction_id=${response.transaction_id}`;
+                            } else {
+                                alert('Payment failed, please try again.');
+                            }
+                        },
+                        onclose: function() {
+                            alert('Transaction cancelled.');
+                        }
+                    });
+                } else {
+                    alert(data.message || 'Failed to initialize payment.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
 </script>
+
 
 <footer>
     <div style="text-align: center; height: auto">
@@ -1098,6 +1151,4 @@
 </footer>
 </body>
 
-<!-- Mirrored from www.ticketleap.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 Mar 2025 06:26:13 GMT -->
 </html>
-<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me -->

@@ -1,0 +1,3 @@
+public_key = FLWPUBK_TEST-0c148342772b6aa7ad8a15460d1d7aec-X
+secret+key = FLWSECK_TEST-a74abdbb973fcd87b27d15ad3b525399-X
+encryption_key = FLWSECK_TESTe2896ec79e3e
