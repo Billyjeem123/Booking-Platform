@@ -11,4 +11,10 @@ class AdminController extends Controller
 
         return view('admin.index');
     }
+
+
+    public function payment(){
+
+        return view('admin.payment');
+    }
 }
