@@ -21,6 +21,5 @@ Route::get('', [HomeController::class, 'index'])->name('home');
 
 // Admin Routes Group
 Route::prefix('admin')->group(function () {
-
         Route::get('/', [AdminController::class, 'index'])->name('home');
     });
