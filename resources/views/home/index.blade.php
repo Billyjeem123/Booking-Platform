@@ -13,9 +13,15 @@
     />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        img:is([sizes='auto' i], [sizes^='auto,' i]) {
-            contain-intrinsic-size: 3000px 1500px;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+        * {
+            font-family: "Montserrat", serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+            scroll-margin-top: 200px;
         }
+
+
     </style>
 
     <title>Online Ticket Selling </title>

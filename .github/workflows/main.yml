@@ -1,0 +1,41 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master # Ensure this matches your branch name
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Start Deployment
+        run: echo "🚀 Starting deployment process..."
+
+      - uses: actions/checkout@v3
+
+      - name: Verify Connection Details
+        run: |
+          echo "✅ Checking deployment configuration..."
+          echo "Branch: ${{ github.ref }}"
+          if [ -z "${{ secrets.FTP_SERVER }}" ]; then
+            echo "❌ Error: FTP_SERVER is not set"
+            exit 1
+          fi
+
+      - name: Deploy to production via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp # Use 'ftp' for plain FTP
+          local-dir: ./ # Directory to upload locally
+          server-dir: ./ # Destination directory
+
+
+      - name: Deployment Status
+        run: echo "✅ Deployment completed successfully!"
