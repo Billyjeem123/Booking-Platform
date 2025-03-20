@@ -32,5 +32,5 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('payment-success', [HomeController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('payment-success/{ticket_id}', [HomeController::class, 'paymentSuccess'])->name('payment.success');
 Route::get('payment-failed', [HomeController::class, 'paymentFailed'])->name('payment.failed');

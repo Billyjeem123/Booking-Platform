@@ -30,7 +30,7 @@
 
                     <div class="payment-info bg-light p-3 rounded mb-4">
                         <h5>Payment Information</h5>
-                        <p class="mb-1"><strong>Transaction ID:</strong> #TXN-{{ rand(10000, 99999) }}</p>
+                        <p class="mb-1"><strong>Transaction ID:</strong> {{$ticket}}</p>
                         <p class="mb-0"><strong>Date:</strong> {{ date('M d, Y') }}</p>
                     </div>
 

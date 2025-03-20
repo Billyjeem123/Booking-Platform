@@ -58,14 +58,14 @@ class Transaction extends Model
     }
 
 
-    public static  function total_revenue()
+    public static function total_revenue()
     {
-        return self::sum('amount');
+        return self::where('status', 'successful')->sum('amount');
     }
 
     public static function today_revenue_earned()
     {
-        return self::whereDate('created_at', now()->toDateString())->sum('amount');
+        return self::where('status', 'successful')->whereDate('created_at', now()->toDateString())->sum('amount');
     }
 
     public static function pending_transactions()

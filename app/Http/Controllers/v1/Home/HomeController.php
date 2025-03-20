@@ -17,9 +17,17 @@ class HomeController extends Controller
         return view('home.index');
     }
 
-    public function paymentSuccess(){
+    public function paymentSuccess($ticket_id){
 
-        return view('home.succesful');
+        $tickets = Transaction::where('ticket_id', $ticket_id)->first();
+
+        if (!$tickets) {
+            return redirect()->route('home')->with('error', 'Invalid Ticket ID.');
+        }
+
+        $ticket = $tickets->ticket_id;
+
+        return view('home.succesful', compact('ticket'));
     }
 
     public function paymentFailed(){
@@ -99,7 +107,9 @@ class HomeController extends Controller
                     ]);
                 }
 
-                return redirect()->route('payment.success')->with('success', 'Payment completed successfully.');
+                return redirect()->route('payment.success', ['ticket_id' => $generateTicketId])
+                    ->with('success', 'Payment completed successfully.');
+
             } else {
                 return redirect()->route('payment.failed')->with('error', 'Payment record not found.');
             }
