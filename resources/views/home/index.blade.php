@@ -896,14 +896,14 @@
                             >
                                 <div
                                     class="fl-module-content fl-node-content"
-                                    style="padding: 20px"
+                                    style="padding: 10px"
                                 >
                                     <div class="TLCustomHeader">
                                         <a class="TLCustomHeader-logo" href="index.html">
                                             <img
                                                 decoding="async"
-                                                src="/wp-content/uploads/2023/10/TL-logo.svg"
-                                                alt="Site Logo"
+                                                src="/logo.svg"
+                                                alt="Site Logo" style="height: 70px"
                                             />
                                         </a>
                                     </div>

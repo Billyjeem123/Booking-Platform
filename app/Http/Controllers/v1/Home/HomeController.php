@@ -89,7 +89,15 @@ class HomeController extends Controller
                     'seat_number' => $generateTicketId,
                     'Bus Type'  => "Toyota Hiace"
                 ]);
-                $this->sendConfirmationEmail($payment);
+
+                try {
+                    $this->sendConfirmationEmail($payment);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send confirmation email', [
+                        'error' => $e->getMessage(),
+                        'payment_id' => $payment->id,
+                    ]);
+                }
 
                 return redirect()->route('payment.success')->with('success', 'Payment completed successfully.');
             } else {
