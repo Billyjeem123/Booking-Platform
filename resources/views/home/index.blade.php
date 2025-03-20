@@ -769,17 +769,17 @@
     </style>
     <link
         rel="icon"
-        href="/wp-content/uploads/2024/07/cropped-TicketLeap_Favicon___white_512px-32x32.png"
+        href="/logo.svg"
         sizes="32x32"
     />
     <link
         rel="icon"
-        href="/wp-content/uploads/2024/07/cropped-TicketLeap_Favicon___white_512px-192x192.png"
+        href="/logo.svg"
         sizes="192x192"
     />
     <link
         rel="apple-touch-icon"
-        href="/wp-content/uploads/2024/07/cropped-TicketLeap_Favicon___white_512px-180x180.png"
+        href="/logo.svg"
     />
     <meta
         name="msapplication-TileImage"
