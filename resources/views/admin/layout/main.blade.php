@@ -138,13 +138,15 @@
 
     // Revenue Chart
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueData = @json($revenueData); // Fetching revenue data from Laravel controller
+
     const revenueChart = new Chart(revenueCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
-                label: 'Revenue',
-                data: [15000, 21000, 18000, 24000, 23000, 24000, 28000, 26000, 30000, 32000, 30000, 34000],
+                label: 'Revenue (₦)',
+                data: revenueData,
                 backgroundColor: 'rgba(78, 115, 223, 0.05)',
                 borderColor: 'rgba(78, 115, 223, 1)',
                 pointRadius: 3,
@@ -163,7 +165,7 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true
                 }
             },
             scales: {
@@ -177,7 +179,7 @@
                     ticks: {
                         beginAtZero: true,
                         callback: function(value) {
-                            return '$' + value.toLocaleString();
+                            return '₦' + value.toLocaleString();
                         }
                     }
                 }
@@ -185,30 +187,8 @@
         }
     });
 
-    // Traffic Chart
-    const trafficCtx = document.getElementById('trafficChart').getContext('2d');
-    const trafficChart = new Chart(trafficCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Direct', 'Social', 'Referral', 'Organic'],
-            datasets: [{
-                data: [30, 25, 20, 25],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
-                hoverBackgroundColor: ['#3a5ecf', '#17a673', '#2c9faf', '#e0b128'],
-                hoverBorderColor: 'rgba(234, 236, 244, 1)',
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    display: true
-                }
-            }
-        }
-    });
+
+
 </script>
 </body>
 </html>

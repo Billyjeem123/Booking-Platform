@@ -6,8 +6,8 @@
         <div class="d-flex align-items-center ms-auto">
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="/api/placeholder/32/32" alt="User" width="32" height="32" class="rounded-circle me-2">
-                    <span>Admin User</span>
+                    <img src="/image.webp" alt="User" width="32" height="32" class="rounded-circle me-2">
+                    <span>{{auth()->user()->name}}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
                     <li><a class="dropdown-item" href="#">Profile</a></li>

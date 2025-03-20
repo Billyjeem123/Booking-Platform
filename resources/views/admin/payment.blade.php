@@ -10,105 +10,62 @@
                     <div class="card-header">
                         <h3 class="card-title">Payment Logs</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
+
+                    <div class="card-body table-responsive"> <!-- Enables scroll on small screens -->
                         <table id="payment-table" class="table table-bordered table-striped">
                             <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Phone Number</th>
+                                <th>Destination</th>
                                 <th>Amount</th>
+                                <th>Status</th>
+                                <th>Phone</th>
+                                <th>Seat Number</th>
+                                <th>Ticket ID</th>
                                 <th>Date Paid</th>
-                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>johndoe@example.com</td>
-                                <td>+1 234-567-8901</td>
-                                <td>$1,250.00</td>
-                                <td>Mar 15, 2025</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>janesmith@example.com</td>
-                                <td>+1 987-654-3210</td>
-                                <td>$750.50</td>
-                                <td>Mar 12, 2025</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Robert Johnson</td>
-                                <td>robert@example.com</td>
-                                <td>+1 456-789-0123</td>
-                                <td>$3,050.75</td>
-                                <td>Mar 10, 2025</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sara Williams</td>
-                                <td>sara@example.com</td>
-                                <td>+1 567-890-1234</td>
-                                <td>$899.99</td>
-                                <td>Mar 8, 2025</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Michael Brown</td>
-                                <td>michael@example.com</td>
-                                <td>+1 678-901-2345</td>
-                                <td>$1,500.00</td>
-                                <td>Mar 5, 2025</td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                </td>
-                            </tr>
+                            @forelse($transactions as $transaction)
+                                <tr>
+                                    <td>{{ $transaction->name }}</td>
+                                    <td>{{ $transaction->email }}</td>
+                                    <td>{{ $transaction->location }}</td>
+                                    <td>₦{{ number_format($transaction->amount, 2) }}</td>
+                                    <td>{{ $transaction->status }}</td>
+                                    <td>{{ $transaction->phone }}</td>
+                                    <td>{{ $transaction->seat_number ?? 'N/A' }}</td>
+                                    <td>{{ $transaction->ticket_id ?? 'N/A' }}</td>
+                                    <td>{{ $transaction->created_at->format('M d, Y') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">No transactions found.</td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                     </div>
-                    <!-- /.card-body -->
+
                     <div class="card-footer clearfix">
-                        <ul class="pagination pagination-sm m-0 float-right">
-                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>
+                        {{ $transactions->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
-                <!-- /.card -->
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
     </div>
 @endsection
 
 @section('scripts')
+    <!-- Include Bootstrap DataTables CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
-        $(function () {
+        $(document).ready(function () {
             $('#payment-table').DataTable({
                 "paging": true,
                 "lengthChange": true,
@@ -116,7 +73,8 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
-                "responsive": true,
+                "responsive": false, // Set to false to make horizontal scrolling work
+                "pageLength": 10,  // Display 10 entries per page
             });
         });
     </script>

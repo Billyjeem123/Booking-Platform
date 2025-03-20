@@ -49,6 +49,7 @@ class HomeController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'location' => $validated['location'],
+            'phone' => $validated['phone'],
             'amount' => $validated['amount'] / 100,
             'currency' => 'NGN',
             'status' => 'pending',
@@ -94,10 +95,32 @@ class HomeController extends Controller
             } else {
                 return redirect()->route('payment.failed')->with('error', 'Payment record not found.');
             }
-        } else {
-            return redirect()->route('payment.failed')->with('error', 'Payment verification failed.');
+        }
+        else {
+            // Log the reason why the payment failed
+            $errorMessage = $data['message'] ?? 'Unknown error';
+            $errorStatus = $data['data']['status'] ?? 'Unknown status';
+            $reference = $data['data']['tx_ref'] ?? null;
+
+            // Log the error to the database if a payment reference exists
+            if ($reference) {
+                Transaction::where('reference', $reference)->update([
+                    'status' => 'failed',
+                    'failure_reason' => $errorMessage,
+                ]);
+            }
+
+            Log::error("Payment verification failed", [
+                'message' => $errorMessage,
+                'status' => $errorStatus,
+                'transaction_id' => $transaction_id,
+                'reference' => $reference
+            ]);
+
+            return redirect()->route('payment.failed')->with('error', 'Payment verification failed. Reason: ' . $errorMessage);
         }
     }
+
 
 
 

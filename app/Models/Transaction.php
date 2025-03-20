@@ -15,6 +15,7 @@ class Transaction extends Model
         'email',
         'location',
         'amount',
+        'phone',
         'currency',
         'status',
         'car_type',
@@ -23,7 +24,7 @@ class Transaction extends Model
         'payment_method',
     ];
 
-    public static function generateTicketId()
+    public static function generateTicketId0()
     {
         // Get the last record from the table
         $lastRecord = self::latest('id')->first();
@@ -39,6 +40,37 @@ class Transaction extends Model
 
         // Generate the new ticket ID
         return "NJ-MVE-31A-{$newNumber}";
+    }
+
+    public static function generateTicketId()
+    {
+        // Retrieve the latest transaction with a non-null ticket_id
+        $lastRecord = self::whereNotNull('ticket_id')->latest('id')->first();
+
+        if ($lastRecord && $lastRecord->ticket_id) {
+            $lastNumber = (int) substr($lastRecord->ticket_id, -3);
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '001';
+        }
+
+        return "NJ-MVE-31A-{$newNumber}";
+    }
+
+
+    public static  function total_revenue()
+    {
+        return self::sum('amount');
+    }
+
+    public static function today_revenue_earned()
+    {
+        return self::whereDate('created_at', now()->toDateString())->sum('amount');
+    }
+
+    public static function pending_transactions()
+    {
+        return self::where('status', 'pending')->count();
     }
 
 

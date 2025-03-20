@@ -6,7 +6,7 @@
         </div>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="{{route('home')}}">
+                <a class="nav-link active" href="{{route('admin.index')}}">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
             </li>
