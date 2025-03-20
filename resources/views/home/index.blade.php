@@ -51,9 +51,8 @@
         /></noscript>
     <meta
         name="description"
-        content="Create and manage events with TicketLeap&#039;s user-friendly, free event ticketing platform. Sign up to start selling tickets online in minutes!"
+        content="Book and manage your trips seamlessly with NaijaMove's reliable ticketing platform. Get your tickets online in minutes and travel with ease!"
     />
-    <link rel="canonical" href="index.html" />
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -574,7 +573,6 @@
         src="/wp-content/plugins/space-station-command-module/vendor/slick-1.8.1/slick/slick.minb1d6.js?ver=1.8.1-1707732893"
         id="command-module-vendoredslick-js"
     ></script>
-    <link rel="https://api.w.org/" href="wp-json/index.html" />
     <link
         rel="alternate"
         title="JSON"
@@ -587,20 +585,7 @@
         title="RSD"
         href="xmlrpc0db0.html?rsd"
     />
-    <link rel="shortlink" href="index.html" />
-    <link
-        rel="alternate"
-        title="oEmbed (JSON)"
-        type="application/json+oembed"
-        href="wp-json/oembed/1.0/embed6c0d.json?url=https%3A%2F%2Fwww.ticketleap.com%2F"
-    />
-    <link
-        rel="alternate"
-        title="oEmbed (XML)"
-        type="text/xml+oembed"
-        href="wp-json/oembed/1.0/embedeb20?url=https%3A%2F%2Fwww.ticketleap.com%2F&amp;format=xml"
-    />
-    <script src="../pixel.convertize.io/11109.js" charset="UTF-8"></script>
+
     <!-- Google Tag Manager -->
     <script>
         ;(function (w, d, s, l, i) {
@@ -798,7 +783,7 @@
     />
     <meta
         name="msapplication-TileImage"
-        content="https://www.ticketleap.com/wp-content/uploads/2024/07/cropped-TicketLeap_Favicon___white_512px-270x270.png"
+        content="/logo.svg"
     />
     <style type="text/css" id="wp-custom-css">
         /*the button from header so that the button will look ok until the user interact with the page, when perfmatters delays css loading*/
@@ -844,11 +829,7 @@
             content-visibility: auto;
         }
     </style>
-    <meta
-        name="generator"
-        content="WP Rocket 3.18.3"
-        data-wpr-features="wpr_automatic_lazy_rendering wpr_oci wpr_preload_links wpr_desktop"
-    />
+
 </head>
 
 <body
@@ -947,17 +928,7 @@
                                         >
                                             <div>
                                                 <div class="SSCMSlider-content_wrapper">
-                                                    <img
-                                                        fetchpriority="high"
-                                                        decoding="async"
-                                                        width="2560"
-                                                        height="1707"
-                                                        src="/ticket.jpg"
-                                                        class="SSCMSlider-slide_background"
-                                                        alt=""
-                                                        sizes="100vw"
-                                                        srcset=""
-                                                    />
+
                                                     <div
                                                         class="SSCMSlider-content SSCMSlider-content--layout_stacked"
                                                     >
@@ -1081,15 +1052,22 @@
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        submitButton.innerText = 'Processing...';
+        submitButton.disabled = true;
+
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('number').value.trim();
         const price = parseFloat(document.getElementById('price').value.replace('₦', '').replace('$', '').trim()) * 100;
 
         const locationSelect = document.getElementById('locationSelect');
-        const selectedLocation = locationSelect.options[locationSelect.selectedIndex].text;  // Get selected location name
+        const selectedLocation = locationSelect.options[locationSelect.selectedIndex].text;
+
         if (!name || !email || !phone || !price) {
             alert('Please fill all fields and select a valid location.');
+            submitButton.innerText = 'Submit';
+            submitButton.disabled = false;
             return;
         }
 
@@ -1104,7 +1082,7 @@
                 email: email,
                 phone: phone,
                 amount: price,
-                location: selectedLocation  // Send the selected location to the backend
+                location: selectedLocation
             })
         })
             .then(response => {
@@ -1123,10 +1101,12 @@
                             name: name,
                             phone_number: phone,
                         },
-                        meta: {  // Adding metadata
-                            location: selectedLocation  // Track the selected location
+                        meta: {
+                            location: selectedLocation
                         },
                         callback: function(response) {
+                            submitButton.innerText = 'Submit';
+                            submitButton.disabled = false;
                             if (response.status === 'successful') {
                                 window.location.href = `/api/payment/payment-success?transaction_id=${response.transaction_id}`;
                             } else {
@@ -1134,15 +1114,24 @@
                             }
                         },
                         onclose: function() {
+                            submitButton.innerText = 'Submit';
+                            submitButton.disabled = false;
                             alert('Transaction cancelled.');
                         }
                     });
                 } else {
                     alert(data.message || 'Failed to initialize payment.');
+                    submitButton.innerText = 'Submit';
+                    submitButton.disabled = false;
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                submitButton.innerText = 'Submit';
+                submitButton.disabled = false;
+            });
     });
+
 
 </script>
 
