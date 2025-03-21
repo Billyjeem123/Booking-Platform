@@ -999,10 +999,10 @@
                         <label for="locationSelect" class="form-label">Location</label>
                         <select class="form-select" id="locationSelect" required>
                             <option value="">Select Location</option>
-                            <option value="Iyana cele at Ilesa" data-price="100">Iyana cele at Ilesa </option>
-                            <option value="O.U.I at Ife bye pass" data-price="80">O.U.I at Ife bye pass </option>
-                            <option value="Ibadan Iwo road onwards to Testing ground Idi (police area command)" data-price="80">
-                                Ibadan Iwo road onwards to Testing ground Idi (police area command) - $80
+                            <option value="Iyana cele at Ilesa" data-price="4500">Iyana cele at Ilesa </option>
+                            <option value="O.U.I at Ife bye pass" data-price="4500">O.U.I at Ife bye pass </option>
+                            <option value="Ibadan Iwo road onwards to Testing ground Idi (police area command)" data-price="6000">
+                                Ibadan Iwo road onwards to Testing ground Idi (police area command)
                             </option>
                         </select>
                     </div>
